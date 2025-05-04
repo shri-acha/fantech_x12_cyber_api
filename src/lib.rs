@@ -6,18 +6,25 @@ fn connect_to_mouse() -> hidapi::HidResult<()>{
 
     let mut data: [u8; 154] = [ 0 ; 154];
     data[0x00] = 0x4;
+
     // bRequest = 9, no clue what this is 
     // data[0x01] = 0x4;// ReportID = 04, this is a required field for two direction packet transfet
     // data[0x02] = 0x3;// ReportType = 03, unsure
     // data[0x03] = 0x1;//  wIndex = 1, data index
     // data[0x06] = 0x9a;// wLength = 154 , length of data segment
 
-    data[0x65] = 0x22; // Something i believe
-    data[0x68] = 0x12; // Brightness level
-    data[0x6C] = 0xFF;// RGB values , RGB values +1 on the values because 0th value is not held by
-                      // requestID
+    data[0x64] = 0x28; // 0x28 for steady mode. 
+    data[0x67] = 0x12; // Brightness level at Stale mode.
+    data[0x6B] = 0xFF;// RGB values , RGB values +1 on the values because -1th value is not held by requestID
+    data[0x6C] = 0xFF;
     data[0x6D] = 0xFF;
-    data[0x6E] = 0xFF;
+
+    data[0x94] = 0x58; // XY - 801 Footers
+    data[0x95] = 0x59;
+    data[0x96] = 0x2D;
+    data[0x97] = 0x38;
+    data[0x98] = 0x30;
+    data[0x99] = 0x01;
 
     let mut device_list = vec![];
     if let Ok(hid_ctx) = hidapi::HidApi::new(){
@@ -33,10 +40,10 @@ fn connect_to_mouse() -> hidapi::HidResult<()>{
                 panic!("{}",e);
             }
             else{
-                println!("Worked!");
+                println!("Data Sent to Mouse!");
             }
         }else {
-            println!("Didn't Work!");
+            println!("Error finding handle to device!");
         }
         
     }

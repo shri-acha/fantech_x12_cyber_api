@@ -4,7 +4,7 @@ use rusb::Device;
 
 fn connect_to_mouse() -> hidapi::HidResult<()>{
 
-    let mut data: [u8; 155] = [ 0 ; 155];
+    let mut data: [u8; 154] = [ 0 ; 154];
     data[0x00] = 0x4;
     // bRequest = 9, no clue what this is 
     // data[0x01] = 0x4;// ReportID = 04, this is a required field for two direction packet transfet
@@ -22,22 +22,21 @@ fn connect_to_mouse() -> hidapi::HidResult<()>{
     let mut device_list = vec![];
     if let Ok(hid_ctx) = hidapi::HidApi::new(){
         for device in hid_ctx.device_list() {
-            device_list.push(device); 
-            println!("{:?} {:?}",device.interface_number(),device);
-            if device.vendor_id() == 9610 && device.product_id() == 23 && device.interface_number() == 1 {
-                if let Ok(m_handl) = hid_ctx.open(0x258a,0x17){
-                    if let Err(e) = m_handl.send_feature_report(&data){
-                        panic!("{}",e);
-                    }
-                    else{
-                        println!("Worked!");
-                        break;
-                    }
-                }else {
-                    println!("Didn't Work!");
-                }
-                break;
+            if device.vendor_id() == 9610 && device.product_id() == 23 {
+                println!("{:?} {:?} {:?} {:?}",device.interface_number(),device,device.product_id(),device.bus_type());
+                device_list.push(device); 
             }
+        }
+        let m_handl = device_list.pop().unwrap().open_device(&hid_ctx);
+        if let Ok(value) = m_handl{
+            if let Err(e) = value.send_feature_report(&data){
+                panic!("{}",e);
+            }
+            else{
+                println!("Worked!");
+            }
+        }else {
+            println!("Didn't Work!");
         }
         
     }

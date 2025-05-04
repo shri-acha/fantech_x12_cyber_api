@@ -1,0 +1,17 @@
+ Output of lsusb for the mouse:
+          bLength                 9
+          bDescriptorType        33
+          bcdHID               1.11
+          bCountryCode            0 Not supported
+          bNumDescriptors         1
+          bDescriptorType        34 (null)
+          wDescriptorLength     236
+          Report Descriptors: 
+
+(PROFILE - 1)
+0x67 (0000)->Brightness (0010)-> Constant
+0x6B -> R 
+0x6C -> G 
+0x6D -> B
+
+ARGHHHHHHHHHHh
